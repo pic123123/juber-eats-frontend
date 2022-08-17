@@ -1,4 +1,5 @@
 import { ApolloError, gql, useMutation } from '@apollo/client';
+import Button from 'components/button';
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styled from 'styled-components';
@@ -64,13 +65,10 @@ function Login() {
   };
   return (
     <LoginContainer>
-      <div className="bg-white w-full max-w-lg pt-10 pb-7 rounded-lg text-center">
-        <h3 className="text-2xl text-gray-800">로그인</h3>
-        <form
-          className="grid gap-3 mt-5 px-5"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <input
+      <LoginBox>
+        <LoginHeader>로그인</LoginHeader>
+        <LoginForm onSubmit={handleSubmit(onSubmit)}>
+          <Input
             type="email"
             placeholder="email"
             {...register('email', {
@@ -78,7 +76,6 @@ function Login() {
               maxLength: 100,
               pattern: REGEX_EMAIL,
             })}
-            className="input mb-3"
           />
           {errors.email?.message && (
             <FormErorr errorMessage={errors.email?.message} />
@@ -95,7 +92,7 @@ function Login() {
               errorMessage={'이메일 주소 형식에 맞게 입력해 주시기 바랍니다.'}
             />
           )}
-          <input
+          <Input
             type="password"
             placeholder="password"
             {...register('password', {
@@ -103,7 +100,6 @@ function Login() {
               minLength: 8,
               pattern: REGEX_PASSWORD,
             })}
-            className="input"
           />
           {errors.password?.message && (
             <FormErorr errorMessage={errors.password?.message} />
@@ -122,24 +118,67 @@ function Login() {
               }
             />
           )}
-          <button type="submit" className="btn mt-3">
+          <Button buttonType="mainContained" width="xs" type="submit">
             로그인
-          </button>
+          </Button>
           {/* {loginMutationResult?.loginOutput.error && (
             <FormErorr errorMessage={loginMutationResult?.loginOutput.error} />
           )} */}
-        </form>
-      </div>
+        </LoginForm>
+      </LoginBox>
     </LoginContainer>
   );
 }
 
 const LoginContainer = styled.div`
-  flex: 1;
+  display: flex;
   height: 100vh;
   justify-content: center;
   align-items: center;
   background-color: rgb(31 41 55);
 `;
 
+const LoginBox = styled.div`
+  background-color: rgb(255 255 255);
+  width: 100%;
+  max-width: 32rem /* 512px */;
+  padding-top: 2.5rem /* 40px */;
+  padding-bottom: 1.75rem /* 28px */;
+  border-radius: 0.5rem /* 8px */;
+  text-align: center;
+`;
+
+const LoginHeader = styled.h3`
+  font-size: 1.5rem /* 24px */;
+  line-height: 2rem /* 32px */;
+  color: rgb(31 41 55);
+`;
+
+const LoginForm = styled.form`
+  display: grid;
+  gap: 0.75rem /* 12px */;
+  margin-top: 1.25rem /* 20px */;
+  padding-left: 1.25rem /* 20px */;
+  padding-right: 1.25rem /* 20px */;
+`;
+
+const Input = styled.input`
+  background-color: rgb(243 244 246);
+  padding-top: 0.75rem /* 12px */;
+  padding-bottom: 0.75rem /* 12px */;
+  padding-left: 1.25rem /* 20px */;
+  padding-right: 1.25rem /* 20px */;
+  border-radius: 0.5rem /* 8px */;
+`;
+
+// const Button = styled.button`
+//   padding-top: 0.75rem /* 12px */;
+//   padding-bottom: 0.75rem /* 12px */;
+//   padding-left: 1.25rem /* 20px */;
+//   padding-right: 1.25rem /* 20px */;
+//   color:
+//   font-size: 1.125rem /* 18px */;
+//   line-height: 1.75rem /* 28px */;
+//   border-radius: 0.5rem /* 8px */;
+// `;
 export default Login;
