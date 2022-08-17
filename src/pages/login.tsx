@@ -1,8 +1,13 @@
 import { ApolloError, gql, useMutation } from '@apollo/client';
 import Button from 'components/button';
+import {
+  loginMutationInput,
+  loginMutationOutput,
+} from 'interfaces/auth.interface';
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 
 import { REGEX_EMAIL, REGEX_PASSWORD } from '../common/common.constatns';
 import { FormErorr } from '../components/form-error';
@@ -29,40 +34,43 @@ function Login() {
     formState: { errors },
   } = useForm<ILoginForm>();
 
-  // const onCompleted = (loginMutationResult: loginMutationOutput) => {
-  //   console.log('completed');
-  //   const {
-  //     loginOutput: { ok, error, token },
-  //   } = loginMutationResult;
-  //   if (ok) {
-  //     console.log(token);
-  //   }
-  // };
-  // const onError = (error: ApolloError) => {
-  //   console.log(`--------on error ${error}`);
-  // };
-  // const [loginMutation, { loading, error, data: loginMutationResult }] =
-  //   useMutation<loginMutationOutput, loginMutationInput>(LOGIN_MUTATION, {
-  //     onCompleted,
-  //     onError,
-  //   });
-
-  // const onSubmit: SubmitHandler<ILoginForm> = () => {
-  //   const { email, password } = getValues();
-  //   loginMutation({
-  //     variables: {
-  //       loginInput: {
-  //         email,
-  //         password,
-  //       },
-  //     },
-  //   });
-  //   // isLoggedInVar(true);
-  // };
-
-  const onSubmit = () => {
-    return true;
+  const onCompleted = async (loginMutationResult: loginMutationOutput) => {
+    const {
+      login: { ok, error, token },
+    } = loginMutationResult;
+    if (ok) {
+      await Swal.fire({
+        title: '로그인 성공',
+        icon: 'success',
+      });
+    }
   };
+  const onError = async (error: ApolloError) => {
+    console.log(`--------on error ${error}`);
+    await Swal.fire({
+      title: '로그인 실패',
+      icon: 'error',
+    });
+  };
+  const [loginMutation, { loading, error, data: loginMutationResult }] =
+    useMutation<loginMutationOutput, loginMutationInput>(LOGIN_MUTATION, {
+      onCompleted,
+      onError,
+    });
+
+  const onSubmit: SubmitHandler<ILoginForm> = () => {
+    const { email, password } = getValues();
+    loginMutation({
+      variables: {
+        loginInput: {
+          email,
+          password,
+        },
+      },
+    });
+    // isLoggedInVar(true);
+  };
+
   return (
     <LoginContainer>
       <LoginBox>
